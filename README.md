@@ -1,4 +1,6 @@
-# Stock War Room
+# StarNion Stock
+
+![StarNion Stock Dashboard](docs/screenshot.webp)
 
 한국 주식 트레이딩 워룸 — 실시간 시세, 뉴스 센티먼트, DART 공시, AI 시그널 대시보드.
 
