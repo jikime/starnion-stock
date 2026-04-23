@@ -1,0 +1,280 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* StarNion War Room — always dark */
+  --background: oklch(0.10 0.015 250);
+  --surface: oklch(0.14 0.018 250);
+  --surface-raised: oklch(0.17 0.018 250);
+  --foreground: oklch(0.93 0 0);
+  --card: oklch(0.14 0.018 250);
+  --card-foreground: oklch(0.93 0 0);
+  --popover: oklch(0.14 0.018 250);
+  --popover-foreground: oklch(0.93 0 0);
+  /* Amber accent = AI / Buy signal */
+  --primary: oklch(0.78 0.17 74);
+  --primary-foreground: oklch(0.10 0.015 250);
+  /* Cyan accent = data / live */
+  --secondary: oklch(0.72 0.15 196);
+  --secondary-foreground: oklch(0.10 0.015 250);
+  --muted: oklch(0.20 0.015 250);
+  --muted-foreground: oklch(0.55 0.01 250);
+  --accent: oklch(0.72 0.15 196);
+  --accent-foreground: oklch(0.10 0.015 250);
+  --destructive: oklch(0.55 0.21 27);
+  --destructive-foreground: oklch(0.93 0 0);
+  --border: oklch(0.22 0.02 250);
+  --input: oklch(0.22 0.02 250);
+  --ring: oklch(0.78 0.17 74);
+  /* Korean market convention: 상승=빨강, 하락=파랑 */
+  --bull: oklch(0.62 0.22 27);
+  --bear: oklch(0.62 0.19 250);
+  /* chart colors */
+  --chart-1: oklch(0.78 0.17 74);
+  --chart-2: oklch(0.72 0.15 196);
+  --chart-3: oklch(0.62 0.22 27);
+  --chart-4: oklch(0.62 0.19 250);
+  --chart-5: oklch(0.65 0.18 310);
+  --radius: 0.5rem;
+  --sidebar: oklch(0.12 0.016 250);
+  --sidebar-foreground: oklch(0.93 0 0);
+  --sidebar-primary: oklch(0.78 0.17 74);
+  --sidebar-primary-foreground: oklch(0.10 0.015 250);
+  --sidebar-accent: oklch(0.20 0.015 250);
+  --sidebar-accent-foreground: oklch(0.93 0 0);
+  --sidebar-border: oklch(0.22 0.02 250);
+  --sidebar-ring: oklch(0.78 0.17 74);
+}
+
+@theme inline {
+  /*
+    카카오 폰트 — next/font/local 로 CSS variable 주입.
+    - --font-sans : 카카오 작은글씨 (body / UI 기본)
+    - --font-display : 카카오 큰글씨 (제목/디스플레이) — Tailwind 의
+        ``font-display`` 유틸리티로 선택 적용 가능.
+    fallback: Apple SD Gothic Neo (macOS) / Malgun Gothic (Windows) / system-ui.
+  */
+  --font-sans:
+    var(--font-kakao-small), -apple-system, BlinkMacSystemFont,
+    'Apple SD Gothic Neo', 'Malgun Gothic', system-ui, sans-serif;
+  --font-display:
+    var(--font-kakao-big), var(--font-kakao-small), -apple-system,
+    BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+  /*
+    font-mono 는 숫자/코드/심볼용. 카카오 작은글씨 를 기본으로 하고
+    숫자 정렬은 각 컴포넌트에서 ``tabular-nums`` 유틸리티로 보장.
+    fallback 은 시스템 monospace (등폭 필요한 코드 블록 대비).
+  */
+  --font-mono:
+    var(--font-kakao-small), -apple-system, 'Apple SD Gothic Neo',
+    'Malgun Gothic', ui-monospace, Menlo, Consolas, monospace;
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-bull: var(--bull);
+  --color-bear: var(--bear);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@keyframes ticker-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.ticker-track {
+  animation: ticker-scroll 40s linear infinite;
+  display: flex;
+  width: max-content;
+}
+
+.ticker-track:hover {
+  animation-play-state: paused;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.live-dot {
+  animation: pulse-dot 1.5s ease-in-out infinite;
+}
+
+@keyframes buy-signal-pop {
+  0% { transform: scale(0) translateY(4px); opacity: 0; }
+  60% { transform: scale(1.2) translateY(-2px); opacity: 1; }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+.buy-signal-icon {
+  animation: buy-signal-pop 0.5s ease-out forwards;
+}
+
+@keyframes slide-in-right {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+.toast-slide-in {
+  animation: slide-in-right 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Glassmorphism card */
+.glass-card {
+  background: rgba(20, 25, 45, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+/* Neon glow helpers */
+.glow-amber {
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.35), 0 0 2px rgba(245, 158, 11, 0.6);
+}
+.glow-cyan {
+  box-shadow: 0 0 12px rgba(6, 182, 212, 0.35), 0 0 2px rgba(6, 182, 212, 0.6);
+}
+.glow-bull {
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.55);
+}
+.glow-bear {
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.55);
+}
+
+/* Radar sweep animation */
+@keyframes radar-sweep {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.radar-sweep {
+  animation: radar-sweep 2s linear infinite;
+  transform-origin: center bottom;
+}
+
+/* Scanner step fade-in */
+@keyframes step-reveal {
+  from { opacity: 0; transform: translateX(-8px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.step-reveal {
+  animation: step-reveal 0.35s ease-out forwards;
+}
+
+/* Scan line sweep across chart */
+@keyframes scan-line {
+  0%   { left: 0%; opacity: 0.9; }
+  95%  { left: 100%; opacity: 0.9; }
+  100% { left: 100%; opacity: 0; }
+}
+
+.scan-line {
+  animation: scan-line 1.8s cubic-bezier(0.4, 0, 0.6, 1) forwards;
+}
+
+/* News timeline pulse */
+@keyframes news-ping {
+  0%   { transform: scale(1); opacity: 1; }
+  70%  { transform: scale(2.2); opacity: 0; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+.news-ping {
+  animation: news-ping 1.4s ease-out infinite;
+}
+
+/* Floating toolbar pop-in */
+@keyframes toolbar-pop {
+  from { opacity: 0; transform: translateX(-50%) translateY(-4px) scale(0.96); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+}
+
+.toolbar-pop {
+  animation: toolbar-pop 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.text-glow-amber {
+  text-shadow: 0 0 10px rgba(245, 158, 11, 0.8);
+}
+.text-glow-cyan {
+  text-shadow: 0 0 10px rgba(6, 182, 212, 0.8);
+}
+
+/* Hidden scrollbar — 스크롤은 동작하되 스크롤바를 시각적으로 숨김 */
+.hide-scrollbar {
+  scrollbar-width: none;          /* Firefox */
+  -ms-overflow-style: none;       /* IE/Edge */
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;                  /* Chrome/Safari/Opera */
+  width: 0;
+  height: 0;
+}
+
+/* Thin 1px scrollbar — 스크롤은 동작하되 다크 테마 배경과 어울리는
+   극도로 얇은 (1px) 스크롤바. Firefox 는 thin 예약어만 지원하므로
+   최소 굵기로 대체되며, WebKit 계열은 실제로 1px 로 렌더된다. */
+.thin-scrollbar {
+  scrollbar-width: thin;          /* Firefox (최소 thin) */
+  scrollbar-color: rgba(255, 255, 255, 0.12) transparent;
+}
+.thin-scrollbar::-webkit-scrollbar {
+  width: 1px;                     /* Chrome/Safari/Opera */
+  height: 1px;
+}
+.thin-scrollbar::-webkit-scrollbar-track {
+  background: transparent;        /* 배경과 동일 */
+}
+.thin-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 0;
+}
+.thin-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
