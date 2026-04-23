@@ -55,22 +55,9 @@ starnion-stock/
 
 ### 3.1 가입 및 키 발급
 
-1. 회원가입 페이지 직접 접속: <https://opendart.fss.or.kr/uss/umt/EgovMberInsertView.do>
-   - 또는 <https://opendart.fss.or.kr> 메인에서 우측 상단 **회원가입**
-   - 이메일 인증 필요
-2. 로그인 후 상단 메뉴 **인증키 신청/관리** → **인증키 신청**
-3. 신청 정보 입력
-   - **API 활용 목적**: 예) "개인 주식 분석 대시보드"
-   - **신청 구분**: 개인 / 법인 / 학교
-   - 약관 동의 후 제출
-4. 승인 즉시 **인증키 관리** 페이지에 40자 영숫자 키가 표시됨
+인증키 신청/관리 페이지: <https://opendart.fss.or.kr/uss/umt/EgovMberInsertView.do>
 
-### 3.2 사용량 제한
-
-- **하루 20,000건** (IP 기준)
-- 본 앱은 스케줄러가 시장 공시 피드를 주기적으로 호출하므로, 공유 서버에서 여러 사용자가 같은 키를 쓰면 제한에 걸릴 수 있음 → 사용자당 개별 키 권장
-
-### 3.3 `.env` 에 등록
+### 3.2 `.env` 에 등록
 
 발급받은 키는 §5에서 생성하는 `backend/.env` 의 `DART_API_KEY` 에 넣습니다.
 
@@ -143,14 +130,9 @@ cd backend
 uv sync
 
 # 5.2 환경변수 파일 생성 (§3, §4에서 발급한 키 사용)
-cat > .env <<'EOF'
-DART_API_KEY=your_dart_api_key_here
-CLAUDE_CODE_OAUTH_TOKEN=                 # 방법 B 사용 시 입력, 방법 A면 빈 값 유지
-PORT=8000
-CORS_ORIGINS=http://localhost:5555
-DB_PATH=data/trades.db
-EOF
-chmod 600 .env                           # 토큰 보호
+cp .env.example .env
+chmod 600 .env         # 토큰 보호
+# 편집기로 DART_API_KEY, (선택) CLAUDE_CODE_OAUTH_TOKEN 값 입력
 ```
 
 환경변수 설명:
@@ -218,68 +200,6 @@ cd frontend && pnpm install && pnpm dev
 ```
 
 브라우저: <http://localhost:5555>
-
----
-
-## 8. 배포 체크리스트
-
-**공통**
-- [ ] `backend/.env` 의 `DART_API_KEY` 설정 (§3)
-- [ ] Claude Code 구독 연동 방법 선택 (§4): 호스트 로그인 vs OAuth 토큰
-- [ ] `CORS_ORIGINS` 를 운영 도메인으로 변경
-- [ ] `frontend/next.config.mjs` 의 rewrites 대상 또는 `NEXT_PUBLIC_API_URL` 를 운영 백엔드로 변경
-- [ ] `chmod 600 backend/.env` 로 토큰 파일 보호
-
-**Backend (Linux 서버 예시)**
-```bash
-# systemd 단위 예시 — /etc/systemd/system/starnion-stock.service
-[Service]
-WorkingDirectory=/opt/starnion-stock/backend
-ExecStart=/root/.local/bin/uv run uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 4
-Restart=always
-EnvironmentFile=/opt/starnion-stock/backend/.env
-```
-
-**Frontend**
-- `pnpm build` 후 `pnpm start` 또는 Vercel / Node 호환 플랫폼에 배포
-- Next.js standalone output을 쓸 경우 `next.config.mjs` 에 `output: 'standalone'` 추가
-
-**리버스 프록시 (Nginx 예시)**
-```nginx
-server {
-    listen 443 ssl http2;
-    server_name your.domain;
-
-    location /api/ {
-        proxy_pass http://127.0.0.1:8000;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-    }
-
-    location / {
-        proxy_pass http://127.0.0.1:5555;
-        proxy_set_header Host $host;
-    }
-}
-```
-
----
-
-## 9. 문제 해결
-
-**설치/실행**
-- `uv sync` 시 lxml wheel 에러 → `lxml>=5.3.0,<6.1` 로 제한됨 (Python 3.13 지원)
-- `data/trades.db` 초기화 필요 시 → 파일 삭제 후 재기동 (lifespan에서 `init_db()` 자동 실행)
-- `stock_master.json` 갱신 수동 트리거 → 서버 재기동 또는 스케줄러 24h 대기
-
-**DART**
-- `401 Unauthorized` / `유효하지 않은 인증키` → 키 오타 또는 활성화 지연 (5분 대기)
-- `사용한도 초과` → 하루 20,000건 초과. IP당 누적이므로 공유 서버는 키 분리 필요
-
-**Claude Code**
-- 로그 `claude-agent-sdk query failed: ...` → `claude --version` 으로 CLI 로그인 상태 확인
-- 서버 환경에서 토큰 방식인데 실패 → `.env` 가 프로세스에 로드되는지 (`systemd EnvironmentFile`, docker `--env-file`) 확인
-- AI 응답이 항상 빈 값 → 구독 한도 소진 가능성
 
 ---
 
